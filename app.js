@@ -1,8 +1,18 @@
 import http from 'http';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const hostname = '127.0.0.1';
-const port = 3000;
 
+const __filename = fileURLToPath(import.meta.url);
+// C:\Users\Blood\Documents\git-repos\nodejs_intro\app.js
+const __dirname = path.dirname(__filename);
+// C:\Users\Blood\Documents\git-repos\nodejs_intro\
+const configPath = path.join(__dirname, 'config.json');
+// C:\Users\Blood\Documents\git-repos\nodejs_intro\config.json
+const config = JSON.parse(readFileSync(configPath, 'utf-8'));
+// { port: 3000, hostname: '}
+const { port, hostname } = config;
 
 
 const server = http.createServer((req, res) => {
