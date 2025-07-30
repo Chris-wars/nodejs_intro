@@ -15,13 +15,55 @@ const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 const { port, hostname } = config;
 
 
+let posts = [
+    { 
+        id: 1, 
+        title: "Mein erster Blogbeitrag", 
+        content: "Das sind die Inhalte von meinem ", 
+        author: "Chris",
+        date: "2025-07-30"
+
+    },
+    {
+       id: 2,
+       title: "Node.js Grundlagen",
+       content: "In diesem Beitrag beschreibe ich die Node.js Grundlagen.",
+       author: "Bob",
+       date: "2025-07-30" 
+    }
+]
+let nextId = 3;
+
+
 const server = http.createServer((req, res) => {
     console.log(`Anfrage erhalten: ${req.method} ${req.url}`);
 
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hallo Welt vom Node.js Server.');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        res.end();
+        return;
+    };
+
+    if (req.method === 'GET' && req.url === '/posts') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(posts));
+        return;
+    }
+
+    else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: "Endpunkt nicht gefunden." }));
+    }
+
+
 });
 
 server.listen(port, hostname, () => {
     console.log(`Server läuft unter http://${hostname}:${port}/`)
+    console.log(`Server läuft unter http://${hostname}:${port}/posts`);
+
 });
